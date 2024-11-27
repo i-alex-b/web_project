@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home - CRYPBIT</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="home.css" />
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header class="site-header">
+      <div class="logo-container">
+        <img src="image-removebg-preview.png" alt="Logo" />
+      </div>
+
+      <!-- Hamburger Menu -->
+      <div class="hamburger-menu" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <nav class="mobile-navigation" id="mobileNav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="about.html" class="nav-link">About</a>
+          </li>
+          <li class="nav-item">
+            <a href="wallet.html" class="nav-link">Wallet</a>
+          </li>
+          <li class="nav-item">
+            <a href="support.html" class="nav-link">Support</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Trading Widget -->
+    <div class="trade-widget-container">
+      <div class="trade-section">
+        <h4>You're Selling</h4>
+        <div class="token-select">
+          <select class="crypto-select" id="selling-crypto">
+            <option value="USDC">USDC</option>
+            <option value="BTC">BTC</option>
+            <option value="ETH">ETH</option>
+            <option value="SOL">SOL</option>
+          </select>
+          <input type="number" value="0.00" class="token-input" />
+        </div>
+      </div>
+
+      <!-- Switch Arrow -->
+      <div class="trade-arrow">
+        <span>&#8645;</span>
+      </div>
+
+      <!-- Buying Section -->
+      <div class="trade-section">
+        <h4>You're Buying</h4>
+        <div class="token-select">
+          <select class="crypto-select" id="buying-crypto">
+            <option value="SOL">SOL</option>
+            <option value="BTC">BTC</option>
+            <option value="ETH">ETH</option>
+            <option value="USDC">USDC</option>
+          </select>
+          <input type="number" value="0.00" class="token-input" />
+        </div>
+      </div>
+
+      <!-- Connect Wallet Button -->
+      <div class="connect-wallet">
+        <!-- Redirect to login.html when clicked -->
+        <button class="connect-btn" id="connectWalletBtn">
+          Connect Wallet
+        </button>
+      </div>
+    </div>
+
+    <!-- Action Buttons 
+    <div class="button-container">
+      <button class="action-button">SWAP</button>
+      <button class="action-button">BRIDGE</button>
+      <button class="action-button">BUY</button>
+    </div>-->
+
+    <div class="logout-container">
+      <a id="logoutButton" class="logout-link" href="#">Log out</a>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="script.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const logoutButton = document.getElementById("logoutButton");
+
+        // Add functionality to log the user out
+        logoutButton.addEventListener("click", function () {
+          // Clear all login-related data from localStorage
+          localStorage.removeItem("isLoggedIn");
+          localStorage.removeItem("walletAddress");
+          localStorage.removeItem("walletBalance");
+
+          // Update the Connect Wallet button text
+          const connectWalletBtn = document.getElementById("connectWalletBtn");
+          if (connectWalletBtn) {
+            connectWalletBtn.textContent = "Connect Wallet";
+            connectWalletBtn.onclick = function () {
+              window.location.href = "login.html";
+            };
+          }
+
+          // Redirect to the login page
+          window.location.href = "login.html";
+        });
+      });
+    </script>
+
+    <!-- Additional Script to Update Button Based on Login Status -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const connectWalletBtn = document.getElementById("connectWalletBtn");
+
+        if (isLoggedIn === "true") {
+          connectWalletBtn.textContent = "Swap";
+          connectWalletBtn.onclick = function () {
+            performSwap(); // Call the swap function
+          };
+        } else {
+          connectWalletBtn.textContent = "Connect Wallet";
+          connectWalletBtn.onclick = function () {
+            window.location.href = "login.html";
+          };
+        }
+
+        const conversionRates = {
+          USDC: { SOL: 0.02, BTC: 0.00004, ETH: 0.0003 },
+          SOL: { USDC: 50, BTC: 0.002, ETH: 0.015 },
+          BTC: { USDC: 25000, SOL: 500, ETH: 15 },
+          ETH: { USDC: 3300, SOL: 66.67, BTC: 0.0667 },
+        };
+
+        function updateDisplayedBalances(walletBalance) {
+          document.getElementById(
+            "balance-usdc"
+          ).textContent = `${walletBalance.USDC.toFixed(5)}`;
+          document.getElementById(
+            "balance-sol"
+          ).textContent = `${walletBalance.SOL.toFixed(5)}`;
+          document.getElementById(
+            "balance-btc"
+          ).textContent = `${walletBalance.BTC.toFixed(5)}`;
+          document.getElementById(
+            "balance-eth"
+          ).textContent = `${walletBalance.ETH.toFixed(5)}`;
+        }
+
+        // Initial display update
+        const initialWalletBalance = JSON.parse(
+          localStorage.getItem("walletBalance")
+        );
+        if (initialWalletBalance) {
+          updateDisplayedBalances(initialWalletBalance);
+        }
+        function performSwap() {
+          const sellingCryptoSelect = document.getElementById("selling-crypto");
+          const buyingCryptoSelect = document.getElementById("buying-crypto");
+          const sellingAmountInput = document.querySelector(".token-input");
+
+          const sellingCrypto = sellingCryptoSelect.value;
+          const buyingCrypto = buyingCryptoSelect.value;
+          const sellingAmount = parseFloat(sellingAmountInput.value);
+
+          let walletBalance = JSON.parse(localStorage.getItem("walletBalance"));
+
+          if (walletBalance[sellingCrypto] < sellingAmount) {
+            alert(`Insufficient ${sellingCrypto} balance.`);
+            return;
+          }
+
+          const buyingAmount =
+            sellingAmount * (conversionRates[sellingCrypto][buyingCrypto] || 1);
+
+          console.log("Before Swap:", walletBalance);
+          console.log(
+            `Swapping ${sellingAmount} ${sellingCrypto} to ${buyingAmount} ${buyingCrypto}`
+          );
+
+          walletBalance[sellingCrypto] -= sellingAmount;
+          walletBalance[buyingCrypto] += buyingAmount;
+
+          localStorage.setItem("walletBalance", JSON.stringify(walletBalance));
+
+          console.log("After Swap:", walletBalance);
+
+          updateDisplayedBalances(walletBalance);
+
+          alert(
+            `Swapped ${sellingAmount} ${sellingCrypto} to ${buyingAmount.toFixed(
+              2
+            )} ${buyingCrypto}.`
+          );
+
+          sellingAmountInput.value = "";
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,97 @@
+/* Center the News Section Content */
+.news-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 50px 0;
+}
+
+/* Container for the image and text */
+.news-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Styling for the News Image */
+.news-image img {
+  max-width: 100%;
+  width: 500px; /* Adjust width as needed */
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* Text Styling */
+.news-text {
+  color: #ddd;
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Title Styling */
+.section-title {
+  font-size: 32px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Navigation Arrows */
+.news-navigation {
+  display: flex;
+  justify-content: space-between;
+  width: 200px; /* Controls arrow spacing */
+  margin-top: 20px;
+}
+
+.arrow {
+  cursor: pointer;
+  font-size: 24px; /* Adjust size for visibility */
+  color: #76c893; /* Matches the theme */
+  transition: color 0.3s;
+}
+
+.arrow:hover {
+  color: #5ba67b; /* Slightly darker shade on hover */
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+  .news-container {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .news-image img {
+    width: 100%;
+  }
+
+  .section-title {
+    font-size: 28px;
+  }
+
+  .news-text {
+    font-size: 16px;
+  }
+
+  .news-navigation {
+    width: 150px;
+  }
+
+  .arrow {
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,191 @@
+/* Trading Widget Styling */
+.trade-widget-container {
+  background-color: #1a1a2e;
+  border-radius: 15px;
+  padding: 20px;
+  width: 320px;
+  margin: 0 auto; /* Center the widget */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  justify-content: center;
+  position: relative;
+  bottom: 10%;
+  transform: translateX(0%);
+  transform: translateY(50%);
+}
+
+/* Individual trade section */
+.trade-section {
+  margin-bottom: 20px;
+}
+/*  */
+.trade-section h4 {
+  font-size: 14px;
+  color: #a0a0a0;
+  margin-bottom: 10px;
+}
+select.crypto-select {
+  -webkit-appearance: none; /* For WebKit browsers */
+  -moz-appearance: none; /* For Firefox */
+  appearance: none; /* Modern browsers */
+  background: none; /* Removes the background, including arrow */
+  border: none; /* Removes border */
+  padding: 10px 15px;
+  color: #fff;
+  font-size: 16px;
+  width: auto;
+  cursor: pointer; /* Make it clickable */
+}
+
+/* Token Select */
+.token-select {
+  position: relative; /* Required for the custom arrow positioning */
+  background-color: #2c2c44;
+  display: flex;
+  padding: 10px 15px;
+  border-radius: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+select.crypto-select:hover {
+  background-color: #99999944;
+  border-radius: 5px;
+}
+
+.token-select::after {
+  /*content: "\25BC"; /* Unicode for downward arrow */
+  font-size: 16px;
+  color: #fff;
+  position: absolute;
+  margin: 0;
+  right: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Ensures the arrow isn't clickable */
+}
+
+/* Token Input */
+.token-input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  text-align: right;
+  width: 100px;
+}
+
+/* Swap Arrow */
+.trade-arrow {
+  font-size: 24px;
+  color: #88d492;
+  margin: 15px 0;
+}
+
+/* Connect Wallet Button */
+.connect-wallet {
+  margin-top: 20px;
+}
+
+.connect-btn {
+  background-color: #76c893;
+  color: #000;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+.connect-btn a {
+  background-color: #76c893;
+  color: #000;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.connect-btn:hover {
+  background-color: #c3cdc30f;
+  border-radius: 8px;
+}
+
+/* Button Container for Action Buttons BUY BRIDGE SWAP */
+.button-container {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 20px; /* Add space after the Swap button */
+  gap: 20px;
+}
+
+/* Action Button Styling BUY BRIDGE SWAP */
+.action-button {
+  padding: 20px 40px;
+  border-radius: 30px;
+  background: linear-gradient(45deg, #76c893, #395e38);
+  border: none;
+  color: black;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.8s ease;
+}
+
+.action-button:hover {
+  background-color: #3c9553;
+}
+
+.action-button:active {
+  background-color: #338435;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* For Firefox */
+  width: 100px; /* Adjust this based on your layout */
+  padding: 10px;
+  font-size: 16px;
+  text-align: center; /* To align the text properly */
+  background-color: #2c2c44; /* Match the background with your container */
+  color: #fff; /* Text color to make it visible */
+  border-radius: 5px; /* Optional: for a better look */
+  border: 1px solid #444; /* Optional: give it a slight border */
+}
+
+.logout-container {
+  text-align: center; /* Center the text */
+  margin-top: 188px; /* Space below the widget */
+  position: relative; /* Ensure it's relative to its position */
+}
+
+.logout-link {
+  font-size: 16px; /* Adjust font size */
+  color: white; /* Match theme color */
+  text-decoration: none; /* Remove underline */
+  cursor: pointer; /* Interactive cursor */
+}
+
+.logout-link:hover {
+  text-decoration: underline; /* Optional hover effect */
+}
+
+/* Ensure the button-container doesn't interfere */
+.button-container {
+  margin-bottom: 50px; /* Space below the "Swap" button */
+}

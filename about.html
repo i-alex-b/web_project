@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News - CRYPBIT</title>
+    <!-- General global CSS file -->
+    <link rel="stylesheet" href="style.css" />
+    <!-- Page specific CSS file -->
+    <link rel="stylesheet" href="about.css" />
+    <!-- Include jQuery for dynamic functionality -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header class="site-header">
+      <div class="logo-container">
+        <img src="image-removebg-preview.png" alt="Logo" />
+      </div>
+
+      <!-- Hamburger Menu -->
+      <div class="hamburger-menu" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <nav class="mobile-navigation" id="mobileNav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="about.html" class="nav-link">About</a>
+          </li>
+          <li class="nav-item">
+            <a href="wallet.html" class="nav-link">Wallet</a>
+          </li>
+          <li class="nav-item">
+            <a href="support.html" class="nav-link">Support</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- News Section -->
+    <section id="news" class="news-section">
+      <h2 class="section-title">News</h2>
+      <div class="news-container">
+        <div class="news-image">
+          <img id="newsImage" src="news1.jpg" alt="News Image" />
+        </div>
+        <div class="news-text">
+          <p id="newsText">
+            Breaking: Crypto markets soar to new heights amid investor optimism.
+          </p>
+        </div>
+      </div>
+      <div class="news-navigation">
+        <span id="prevArrow" class="arrow">&#8592;</span>
+        <span id="nextArrow" class="arrow">&#8594;</span>
+      </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script>
+      $(document).ready(function () {
+        // Dynamic News Data
+        const newsData = [
+          {
+            image: "news1.jpg",
+            text: "🚨BREAKING: Another $XRP ETF is on the way. Probably no big deal...🚀#CryptoNews #XRP ",
+          },
+          {
+            image: "news2.jpg",
+            text: "🚨BREAKING: Blackrock #BITCOIN spot ETF has 1:1 backing with real BTC! Your still early! 🚀#CryptoNews ",
+          },
+          {
+            image: "news3.jpg",
+            text: "🚨BREAKING: USA SEC Chair Gary Gensler to step down! 🚀#CryptoNews ",
+          },
+        ];
+
+        let currentIndex = 0;
+
+        // Function to update news content
+        function updateNews(index) {
+          $("#newsImage").attr("src", newsData[index].image);
+          $("#newsText").text(newsData[index].text);
+        }
+
+        // Handle Arrow Clicks
+        $("#prevArrow").click(function () {
+          currentIndex = (currentIndex - 1 + newsData.length) % newsData.length;
+          updateNews(currentIndex);
+        });
+
+        $("#nextArrow").click(function () {
+          currentIndex = (currentIndex + 1) % newsData.length;
+          updateNews(currentIndex);
+        });
+
+        // Auto-switch news every 20 seconds
+        setInterval(function () {
+          currentIndex = (currentIndex + 1) % newsData.length;
+          updateNews(currentIndex);
+        }, 4000);
+
+        // Initial Load
+        updateNews(currentIndex);
+      });
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>

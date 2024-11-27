@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wallet - CRYPBIT</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="wallet.css" />
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header class="site-header">
+      <div class="logo-container">
+        <img src="image-removebg-preview.png" alt="Logo" />
+      </div>
+      <div class="hamburger-menu" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <nav class="mobile-navigation" id="mobileNav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="about.html" class="nav-link">About</a>
+          </li>
+          <li class="nav-item">
+            <a href="wallet.html" class="nav-link">Wallet</a>
+          </li>
+          <li class="nav-item">
+            <a href="support.html" class="nav-link">Support</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Wallet Section -->
+    <section class="wallet-section">
+      <div class="wallet-info">
+        <p class="wallet-address">
+          Wallet Address: <span id="walletAddress">Not Connected</span>
+        </p>
+        <h2>Balance</h2>
+        <div class="balance-item">
+          <span>USDC</span>
+          <span id="balance-usdc">0.00000</span>
+        </div>
+        <div class="balance-item">
+          <span>SOL</span>
+          <span id="balance-sol">0.00000</span>
+        </div>
+        <div class="balance-item">
+          <span>BTC</span>
+          <span id="balance-btc">0.00000</span>
+        </div>
+        <div class="balance-item">
+          <span>ETH</span>
+          <span id="balance-eth">0.00000</span>
+        </div>
+        <button id="connectWalletBtn" class="connect-btn">
+          Connect Wallet
+        </button>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const walletAddress = localStorage.getItem("walletAddress");
+        const walletActionBtn = document.getElementById("connectWalletBtn");
+
+        if (isLoggedIn === "true" && walletAddress) {
+          // Display the wallet address and balance if logged in
+          document.querySelector(
+            ".wallet-address"
+          ).textContent = `Wallet Address: ${walletAddress}`;
+          const walletBalance = JSON.parse(
+            localStorage.getItem("walletBalance")
+          );
+
+          if (walletBalance && walletBalance.USDC !== undefined) {
+            document.querySelector(".balance-item").innerHTML = `
+                        <span>USDC</span>
+                        <span>${walletBalance.USDC.toFixed(2)}</span>
+                    `;
+          }
+
+          walletActionBtn.textContent = "Trade";
+          walletActionBtn.onclick = function () {
+            window.location.href = "index.html";
+          };
+        } else {
+          // If not logged in, keep the button as "Connect Wallet" and redirect to login page
+          walletActionBtn.onclick = function () {
+            window.location.href = "login.html";
+          };
+        }
+      });
+    </script>
+
+    <script>
+      // Define the updateDisplayedBalances function here
+      function updateDisplayedBalances(walletBalance) {
+        document.getElementById(
+          "balance-usdc"
+        ).textContent = `${walletBalance.USDC.toFixed(5)}`;
+        document.getElementById(
+          "balance-sol"
+        ).textContent = `${walletBalance.SOL.toFixed(5)}`;
+        document.getElementById(
+          "balance-btc"
+        ).textContent = `${walletBalance.BTC.toFixed(5)}`;
+        document.getElementById(
+          "balance-eth"
+        ).textContent = `${walletBalance.ETH.toFixed(5)}`;
+      }
+
+      // Example usage: Call this function after fetching or updating wallet balances
+      const walletBalance = JSON.parse(localStorage.getItem("walletBalance"));
+      if (walletBalance) {
+        updateDisplayedBalances(walletBalance);
+      }
+    </script>
+  </body>
+</html>
