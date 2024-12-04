@@ -6,9 +6,10 @@
     <title>Wallet - CRYPBIT</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="wallet.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
-    <!-- Header Section -->
+    <!-- Sekcja nagłówka -->
     <header class="site-header">
       <div class="logo-container">
         <img src="image-removebg-preview.png" alt="Logo" />
@@ -24,7 +25,7 @@
             <a href="index.html" class="nav-link">Home</a>
           </li>
           <li class="nav-item">
-            <a href="about.html" class="nav-link">About</a>
+            <a href="about.html" class="nav-link">News</a>
           </li>
           <li class="nav-item">
             <a href="wallet.html" class="nav-link">Wallet</a>
@@ -36,7 +37,7 @@
       </nav>
     </header>
 
-    <!-- Wallet Section -->
+    <!-- Sekcja portfela -->
     <section class="wallet-section">
       <div class="wallet-info">
         <p class="wallet-address">
@@ -65,23 +66,27 @@
       </div>
     </section>
 
-    <script src="script.js"></script>
-
+    <!-- Skrypt: Sprawdzanie statusu logowania i wyświetlanie salda portfela -->
+    <!-- Typ: JavaScript -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // Pobierz status logowania i adres portfela z localStorage
         const isLoggedIn = localStorage.getItem("isLoggedIn");
         const walletAddress = localStorage.getItem("walletAddress");
         const walletActionBtn = document.getElementById("connectWalletBtn");
 
         if (isLoggedIn === "true" && walletAddress) {
-          // Display the wallet address and balance if logged in
+          // Wyświetl adres portfela i saldo, jeśli użytkownik jest zalogowany
           document.querySelector(
             ".wallet-address"
           ).textContent = `Wallet Address: ${walletAddress}`;
+
+          // Pobierz saldo z localStorage
           const walletBalance = JSON.parse(
             localStorage.getItem("walletBalance")
           );
 
+          // Sprawdź, czy saldo istnieje i wyświetl je
           if (walletBalance && walletBalance.USDC !== undefined) {
             document.querySelector(".balance-item").innerHTML = `
                         <span>USDC</span>
@@ -89,12 +94,13 @@
                     `;
           }
 
+          // Zmień tekst przycisku na "Trade" i przekieruj do strony głównej
           walletActionBtn.textContent = "Trade";
           walletActionBtn.onclick = function () {
             window.location.href = "index.html";
           };
         } else {
-          // If not logged in, keep the button as "Connect Wallet" and redirect to login page
+          // Jeśli użytkownik nie jest zalogowany, przycisk przekierowuje do logowania
           walletActionBtn.onclick = function () {
             window.location.href = "login.html";
           };
@@ -102,28 +108,25 @@
       });
     </script>
 
+    <!-- Skrypt: Wyświetlanie salda portfela -->
+    <!-- Typ: jQuery -->
     <script>
-      // Define the updateDisplayedBalances function here
+      // Funkcja do aktualizacji wyświetlanych sald portfela
       function updateDisplayedBalances(walletBalance) {
-        document.getElementById(
-          "balance-usdc"
-        ).textContent = `${walletBalance.USDC.toFixed(5)}`;
-        document.getElementById(
-          "balance-sol"
-        ).textContent = `${walletBalance.SOL.toFixed(5)}`;
-        document.getElementById(
-          "balance-btc"
-        ).textContent = `${walletBalance.BTC.toFixed(5)}`;
-        document.getElementById(
-          "balance-eth"
-        ).textContent = `${walletBalance.ETH.toFixed(5)}`;
+        $("#balance-usdc").text(walletBalance.USDC.toFixed(5)); // Aktualizuj saldo USDC
+        $("#balance-sol").text(walletBalance.SOL.toFixed(5)); // Aktualizuj saldo SOL
+        $("#balance-btc").text(walletBalance.BTC.toFixed(5)); // Aktualizuj saldo BTC
+        $("#balance-eth").text(walletBalance.ETH.toFixed(5)); // Aktualizuj saldo ETH
       }
 
-      // Example usage: Call this function after fetching or updating wallet balances
-      const walletBalance = JSON.parse(localStorage.getItem("walletBalance"));
-      if (walletBalance) {
-        updateDisplayedBalances(walletBalance);
-      }
+      $(document).ready(function () {
+        // Pobierz saldo portfela z localStorage
+        const walletBalance = JSON.parse(localStorage.getItem("walletBalance"));
+        if (walletBalance) {
+          // Zaktualizuj wyświetlane saldo
+          updateDisplayedBalances(walletBalance);
+        }
+      });
     </script>
   </body>
 </html>
