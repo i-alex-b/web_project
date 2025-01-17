@@ -1,0 +1,341 @@
+-- *******************************************************************************
+-- *                                        				                                    
+-- *   Grupa laboratoryjna:	 		               
+-- *                                       					                                    
+-- *******************************************************************************
+-- * 																		     
+-- *   Nazwisko i imię:                                                          
+-- * 																		     
+-- *******************************************************************************
+-- * 																		     
+-- *   Nr indeksu:                                                               
+-- * 																		     
+-- *******************************************************************************
+-- *******************************************************************************
+-- * 																		     
+-- *   Temat projektu:                                                               
+-- * 																		     
+-- *******************************************************************************
+
+-- *******************************************************************************
+-- *
+-- 							B A Z A   O B I E K T O W A
+-- *
+-- *******************************************************************************
+
+-- -------------------------------------------------------------------------------
+-- TWORZENIE TYPÓW OBIEKTOWYCH I ICH METOD   [CREATE TYPE]                                         
+-- -------------------------------------------------------------------------------
+
+
+CREATE OR REPLACE TYPE dostawca_st;
+/
+
+CREATE OR REPLACE TYPE kasa_st;
+/
+
+CREATE OR REPLACE TYPE pracownik_st;
+/
+
+CREATE OR REPLACE TYPE recepta_st;
+/
+
+CREATE OR REPLACE TYPE zamowienie_st;
+/
+
+CREATE OR REPLACE TYPE dane_st AS OBJECT (
+        ulica   VARCHAR2(30),
+        miasto  VARCHAR2(20),
+        telefon INTEGER
+) NOT FINAL;
+/
+
+CREATE OR REPLACE TYPE dostawca_st UNDER dane_st (
+        id_dostawcy    INTEGER,
+        nazwa_dostawcy VARCHAR2(30)
+) NOT FINAL;
+/
+
+CREATE OR REPLACE TYPE pracownik_array IS
+    VARRAY(10) OF REF pracownik_st;
+/
+
+CREATE OR REPLACE TYPE kasa_st AS OBJECT (
+        id_sprzedazy        INTEGER,
+        data_sprzedazy      DATE,
+        ulgi                NUMBER,
+        faktura             VARCHAR2(100),
+        stan_kasy           VARCHAR2(50),
+        array_ref_pracownik pracownik_array
+) NOT FINAL;
+/
+
+CREATE OR REPLACE TYPE osoby_st AS OBJECT (
+        pesel     INTEGER,
+        imie      VARCHAR2(20),
+        nazwisko  VARCHAR2(30),
+        data_ur   DATE,
+        inst_dane dane_st
+) NOT FINAL;
+/
+
+CREATE OR REPLACE TYPE recepta_array IS
+    VARRAY(10) OF REF recepta_st;
+/
+
+CREATE OR REPLACE TYPE klient_na_recepte_st UNDER osoby_st (
+        id_pacjeta        INTEGER,
+        array_ref_recepta recepta_array
+) NOT FINAL;
+/
+
+CREATE OR REPLACE TYPE leki_st AS OBJECT (
+        lek_id     INTEGER,
+        nazwa_leku VARCHAR2(50),
+        cena       NUMBER,
+        zalecenia  VARCHAR2(150),
+        magazyn    INTEGER,
+        stan_mag   VARCHAR2(10),
+        marka      VARCHAR2(30)
+) NOT FINAL;
+/
+
+CREATE OR REPLACE TYPE zamowienie_array IS
+    VARRAY(10) OF REF zamowienie_st;
+/
+
+CREATE OR REPLACE TYPE pracownik_st UNDER osoby_st (
+        id_pracownika        INTEGER,
+        array_ref_zamowienie zamowienie_array
+) NOT FINAL;
+/
+
+CREATE OR REPLACE TYPE recepta_st UNDER osoby_st (
+        id_recepty   INTEGER,
+        data_wyst    DATE,
+        opis_recepty VARCHAR2(300),
+        lekarz_id    INTEGER
+) NOT FINAL;
+/
+
+
+
+CREATE OR REPLACE TYPE recepta_arrayv1 IS
+    VARRAY(10) OF recepta_st;
+/
+
+CREATE OR REPLACE TYPE kasa_arrayv1 IS
+    VARRAY(10) OF kasa_st;
+/
+
+CREATE OR REPLACE TYPE leki_array IS
+    TABLE OF leki_st;
+/
+
+CREATE OR REPLACE TYPE szczegoly_sprzedazy_st AS OBJECT (
+        ilosc         INTEGER,
+        historia      INTEGER,
+        array_recepta recepta_arrayv1,
+        array_kasa    kasa_arrayv1,
+        array_leki    leki_array
+) NOT FINAL;
+/
+
+CREATE OR REPLACE TYPE zamowienie_st AS OBJECT (
+        nr_zamowienia      INTEGER,
+        data_zlozenia      DATE,
+        status_zam         VARCHAR2(20),
+        rozliczenie_za_zam VARCHAR2(50),
+        ref_dostawca       REF dostawca_st
+) NOT FINAL;
+/
+
+CREATE OR REPLACE TYPE zamowienie_arrayv1 IS
+    TABLE OF zamowienie_st;
+/
+
+CREATE OR REPLACE TYPE szczegoly_zamowien_st AS OBJECT (
+        ilosc                 INTEGER,
+        data_waznosci         DATE,
+        przewidywania_dostawy DATE,
+        array_zamowienie      zamowienie_arrayv1,
+        array_leki            leki_array
+) NOT FINAL;
+/
+
+
+
+CREATE OR REPLACE TYPE dostawca_array IS
+    VARRAY(10) OF REF dostawca_st;
+/
+
+CREATE OR REPLACE TYPE kasa_array IS
+    VARRAY(10) OF REF kasa_st;
+/
+
+CREATE OR REPLACE TYPE szczegoly_sprzedazy_array IS
+    VARRAY(10) OF szczegoly_sprzedazy_st;
+/
+
+-- -------------------------------------------------------------------------------
+-- TWORZENIE TABEL OBIEKTOWYCH   [CREATE TABLE]                                         
+-- -------------------------------------------------------------------------------
+
+
+
+CREATE TABLE dane OF dane_st;
+
+CREATE TABLE dostawca OF dostawca_st (
+    id_dostawcy NOT NULL,
+    nazwa_dostawcy NOT NULL
+);
+
+CREATE TABLE kasa OF kasa_st (
+    id_sprzedazy NOT NULL,
+    array_ref_pracownik NOT NULL
+);
+
+CREATE TABLE klient_na_recepte OF klient_na_recepte_st (
+    imie NOT NULL,
+    nazwisko NOT NULL,
+    id_pacjeta NOT NULL,
+    array_ref_recepta NOT NULL
+);
+
+CREATE TABLE leki OF leki_st (
+    lek_id NOT NULL,
+    nazwa_leku NOT NULL,
+    cena NOT NULL,
+    zalecenia NOT NULL,
+    stan_mag NOT NULL
+);
+
+CREATE TABLE osoby OF osoby_st (
+    imie NOT NULL,
+    nazwisko NOT NULL
+);
+
+CREATE TABLE pracownik OF pracownik_st (
+    imie NOT NULL,
+    nazwisko NOT NULL,
+    id_pracownika NOT NULL,
+    array_ref_zamowienie NOT NULL
+);
+
+CREATE TABLE recepta OF recepta_st (
+    imie NOT NULL,
+    nazwisko NOT NULL,
+    id_recepty NOT NULL,
+    lekarz_id NOT NULL
+);
+
+CREATE TABLE szczegoly_sprzedazy OF szczegoly_sprzedazy_st
+NESTED TABLE array_leki 
+    STORE AS szczegoly_sprzedarzy_array_leki;
+
+CREATE TABLE szczegoly_zamowien OF szczegoly_zamowien_st
+NESTED TABLE array_zamowienie 
+    STORE AS szczegoly_zamowien_array_zamowienie
+NESTED TABLE array_leki 
+    STORE AS szczegoly_zamowien_array_leki;
+
+CREATE TABLE zamowienie OF zamowienie_st (
+    nr_zamowienia NOT NULL,
+    status_zam NOT NULL,
+    rozliczenie_za_zam NOT NULL,
+    ref_dostawca NOT NULL
+);
+
+-- -------------------------------------------------------------------------------
+-- POLECENIA:   5 X INSERT  DO KAŻDEJ Z TABEL                                                
+-- -------------------------------------------------------------------------------
+-- INSERT INTO dane
+INSERT INTO dane VALUES (dane_st('Kwiatowa', 'Warszawa', 123456789));
+INSERT INTO dane VALUES (dane_st('Polna', 'Kraków', 987654321));
+INSERT INTO dane VALUES (dane_st('Leśna', 'Gdańsk', 123123123));
+INSERT INTO dane VALUES (dane_st('Morska', 'Sopot', 321321321));
+INSERT INTO dane VALUES (dane_st('Górska', 'Zakopane', 456456456));
+
+-- INSERT INTO dostawca
+INSERT INTO dostawca VALUES (dostawca_st('Kwiatowa', 'Warszawa', 123456789, 1, 'Dostawca A'));
+INSERT INTO dostawca VALUES (dostawca_st('Polna', 'Kraków', 987654321, 2, 'Dostawca B'));
+INSERT INTO dostawca VALUES (dostawca_st('Leśna', 'Gdańsk', 123123123, 3, 'Dostawca C'));
+INSERT INTO dostawca VALUES (dostawca_st('Morska', 'Sopot', 321321321, 4, 'Dostawca D'));
+INSERT INTO dostawca VALUES (dostawca_st('Górska', 'Zakopane', 456456456, 5, 'Dostawca E'));
+
+-- INSERT INTO kasa
+INSERT INTO kasa VALUES (kasa_st(1, SYSDATE, 10.0, 'Faktura 1', 'Stan A', pracownik_array()));
+INSERT INTO kasa VALUES (kasa_st(2, SYSDATE, 20.0, 'Faktura 2', 'Stan B', pracownik_array()));
+INSERT INTO kasa VALUES (kasa_st(3, SYSDATE, 15.0, 'Faktura 3', 'Stan C', pracownik_array()));
+INSERT INTO kasa VALUES (kasa_st(4, SYSDATE, 25.0, 'Faktura 4', 'Stan D', pracownik_array()));
+INSERT INTO kasa VALUES (kasa_st(5, SYSDATE, 30.0, 'Faktura 5', 'Stan E', pracownik_array()));
+
+-- INSERT INTO osoby
+INSERT INTO osoby VALUES (osoby_st(123456789, 'Jan', 'Kowalski', SYSDATE, dane_st('Kwiatowa', 'Warszawa', 123456789))); 
+INSERT INTO osoby VALUES (osoby_st(987654321, 'Anna', 'Nowak', SYSDATE, dane_st('Polna', 'Kraków', 987654321)));
+INSERT INTO osoby VALUES (osoby_st(111222333, 'Marek', 'Wiśniewski', SYSDATE, dane_st('Leśna', 'Gdańsk', 123123123)));
+INSERT INTO osoby VALUES (osoby_st(444555666, 'Ewa', 'Kaczmarek', SYSDATE, dane_st('Morska', 'Sopot', 321321321)));
+INSERT INTO osoby VALUES (osoby_st(777888999, 'Tomasz', 'Zieliński', SYSDATE, dane_st('Górska', 'Zakopane', 456456456)));
+
+-- INSERT INTO leki
+INSERT INTO leki VALUES (leki_st(1, 'Lek A', 20.0, 'Codziennie', 100, 'Dostępny', 'Marka A'));
+INSERT INTO leki VALUES (leki_st(2, 'Lek B', 50.0, 'Przed jedzeniem', 200, 'Brak', 'Marka B'));
+INSERT INTO leki VALUES (leki_st(3, 'Lek C', 35.0, 'Po jedzeniu', 150, 'Dostępny', 'Marka C'));
+INSERT INTO leki VALUES (leki_st(4, 'Lek D', 25.0, 'Na noc', 300, 'Dostępny', 'Marka D'));
+INSERT INTO leki VALUES (leki_st(5, 'Lek E', 75.0, 'Co drugi dzień', 50, 'Brak', 'Marka E'));
+
+-- -------------------------------------------------------------------------------
+-- POLECENIA:   10 X SELECT                                                     
+-- -------------------------------------------------------------------------------
+
+
+-- tutaj miejsce na kod
+
+
+-- -------------------------------------------------------------------------------
+-- POLECENIA:   5 X UPDATE  DO WSZYSTKICH TABEL                                               
+-- -------------------------------------------------------------------------------
+
+
+-- tutaj miejsce na kod
+
+
+-- -------------------------------------------------------------------------------
+-- POLECENIA:   5 X DELETE  DO WSZYSTKICH TABEL                                               
+-- -------------------------------------------------------------------------------
+
+
+-- tutaj miejsce na kod
+
+
+
+
+
+
+-- -------------------------------------------------------------------------------
+-- USUWANIE STRUKTURY BAZY DANYCH     [DROP TABLE, DROP TYPE]                                       
+-- -------------------------------------------------------------------------------
+
+DROP TABLE "S106152"."DANE" CASCADE CONSTRAINTS;
+DROP TABLE "S106152"."DOSTAWCA" CASCADE CONSTRAINTS;
+DROP TABLE "S106152"."KASA" CASCADE CONSTRAINTS;
+DROP TABLE "S106152"."KLIENT_NA_RECEPTE" CASCADE CONSTRAINTS;
+DROP TABLE "S106152"."LEKI" CASCADE CONSTRAINTS;
+DROP TABLE "S106152"."OSOBY" CASCADE CONSTRAINTS;
+DROP TABLE "S106152"."PRACOWNIK" CASCADE CONSTRAINTS;
+DROP TABLE "S106152"."RECEPTA" CASCADE CONSTRAINTS;
+
+DROP TABLE "S106152"."SZCZEGOLY_SPRZEDAZY" CASCADE CONSTRAINTS;
+DROP TABLE "S106152"."SZCZEGOLY_ZAMOWIEN" CASCADE CONSTRAINTS;
+
+
+DROP TABLE "S106152"."ZAMOWIENIE" CASCADE CONSTRAINTS;
+
+-- Drop all types
+BEGIN
+   FOR rec IN (SELECT type_name FROM user_types)
+   LOOP
+      EXECUTE IMMEDIATE 'DROP TYPE ' || rec.type_name || ' FORCE';
+   END LOOP;
+END;
+/
